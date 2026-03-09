@@ -4,14 +4,14 @@
  * It allows us to share data (posts, users, comments) and actions (addPost, deletePost)
  * across the entire application without passing props down manually through every component.
  */
-import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
 import { Post, Comment, User, BlogState } from '../types/blog';
 
 // The Context Type defines the structure of our global state and the functions to update it.
 interface BlogContextType extends BlogState {
-  addPost: (post: Omit<Post, 'id' | 'createdAt'>) => void;
-  deletePost: (id: string) => void;
-  addComment: (comment: Omit<Comment, 'id' | 'createdAt'>) => void;
+  addPost: (post: Omit<Post, 'id' | 'createdAt'>) => Promise<void>;
+  deletePost: (id: string) => Promise<void>;
+  addComment: (comment: Omit<Comment, 'id' | 'createdAt'>) => Promise<void>;
   setCurrentUser: (user: User | null) => void;
 }
 
@@ -55,11 +55,32 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * 'state' is the current value, and 'setState' is the function we call to update it.
    */
   const [state, setState] = useState<BlogState>({
-    posts: initialPosts,
-    users: initialUsers,
+    posts: [],
+    users: [],
     comments: [],
-    currentUser: initialUsers[0],
+    currentUser: null,
+    loading: true,
   });
+
+  /**
+   * Simulate initial data fetching using async/await.
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      // Simulate a network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setState(prev => ({
+        ...prev,
+        posts: initialPosts,
+        users: initialUsers,
+        currentUser: initialUsers[0],
+        loading: false,
+      }));
+    };
+
+    fetchData();
+  }, []);
 
   /**
    * useCallback:
@@ -68,36 +89,57 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
    * when passing functions to child components that use 'React.memo'.
    */
   const addPost = useCallback(
-      (
-          postData: Omit<Post, 'id' | 'createdAt'>) => {
-            const newPost: Post = {
-              ...postData,
-              id: Math.random().toString(36).substr(2, 9),
-              createdAt: new Date().toISOString(),
-            };
-            // Functional update: we use the previous state (prev) to calculate the new state.
-            setState(
-                prev => (
-                    {
-                      ...prev, posts: [newPost, ...prev.posts]
-                    }
-                )
-            );
-          },
-          []
-      );
+      async (postData: Omit<Post, 'id' | 'createdAt'>) => {
+        setState(prev => ({ ...prev, loading: true }));
+        
+        // Simulate an asynchronous API call
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        const newPost: Post = {
+          ...postData,
+          id: Math.random().toString(36).substr(2, 9),
+          createdAt: new Date().toISOString(),
+        };
 
-  const deletePost = useCallback((id: string) => {
-    setState(prev => ({ ...prev, posts: prev.posts.filter(p => p.id !== id) }));
+        setState(prev => ({
+          ...prev,
+          posts: [newPost, ...prev.posts],
+          loading: false,
+        }));
+      },
+      []
+  );
+
+  const deletePost = useCallback(async (id: string) => {
+    setState(prev => ({ ...prev, loading: true }));
+    
+    // Simulate an asynchronous API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setState(prev => ({
+      ...prev,
+      posts: prev.posts.filter(p => p.id !== id),
+      loading: false
+    }));
   }, []);
 
-  const addComment = useCallback((commentData: Omit<Comment, 'id' | 'createdAt'>) => {
+  const addComment = useCallback(async (commentData: Omit<Comment, 'id' | 'createdAt'>) => {
+    setState(prev => ({ ...prev, loading: true }));
+    
+    // Simulate an asynchronous API call
+    await new Promise(resolve => setTimeout(resolve, 600));
+
     const newComment: Comment = {
       ...commentData,
       id: Math.random().toString(36).substr(2, 9),
       createdAt: new Date().toISOString(),
     };
-    setState(prev => ({ ...prev, comments: [...prev.comments, newComment] }));
+    
+    setState(prev => ({
+      ...prev,
+      comments: [...prev.comments, newComment],
+      loading: false
+    }));
   }, []);
 
   const setCurrentUser = useCallback((user: User | null) => {

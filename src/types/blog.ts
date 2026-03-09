@@ -26,4 +26,5 @@ export interface BlogState {
   users: User[];
   comments: Comment[];
   currentUser: User | null;
+  loading: boolean;
 }

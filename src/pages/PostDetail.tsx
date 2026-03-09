@@ -24,7 +24,7 @@ const PostDetail: React.FC = () => {
   const navigate = useNavigate();
 
   // Consume global state and actions from our BlogContext.
-  const { posts, users, comments, addComment, currentUser } = useBlog();
+  const { posts, users, comments, addComment, currentUser, loading } = useBlog();
   
   /**
    * useState:
@@ -80,11 +80,11 @@ const PostDetail: React.FC = () => {
    * Form event handler. We prevent the default browser refresh and
    * call the 'addComment' action from our context.
    */
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentText.trim() || !currentUser || !id) return;
 
-    addComment({
+    await addComment({
       content: commentText,
       postId: id,
       authorId: currentUser.id,
@@ -94,7 +94,15 @@ const PostDetail: React.FC = () => {
   };
 
   // Loading state: Show a message if the post hasn't been found yet.
-  if (!post) return <div className="text-center py-20 font-medium text-gray-400">Loading post...</div>;
+  if (loading && !post) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (!post) return <div className="text-center py-20 font-medium text-gray-400">Post not found.</div>;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -153,11 +161,15 @@ const PostDetail: React.FC = () => {
             </div>
             <button 
               type="submit"
-              disabled={!commentText.trim()}
+              disabled={!commentText.trim() || loading}
               className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              <Send size={14} />
-              Comment
+              {loading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              ) : (
+                <Send size={14} />
+              )}
+              {loading ? 'Posting...' : 'Comment'}
             </button>
           </div>
         </form>

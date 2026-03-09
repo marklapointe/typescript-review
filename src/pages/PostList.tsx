@@ -48,7 +48,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, author }) => {
         {/* Conditional Rendering: Only show the delete button if the user is the owner. */}
         {isOwner && (
           <button 
-            onClick={() => deletePost(post.id)}
+            onClick={async () => {
+              if (window.confirm('Are you sure you want to delete this post?')) {
+                await deletePost(post.id);
+              }
+            }}
             className="text-gray-300 hover:text-red-500 transition-colors p-1"
             title="Delete post"
           >
@@ -79,7 +83,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, author }) => {
  * The main page component that lists all blog posts with search functionality.
  */
 const PostList: React.FC = () => {
-  const { posts, users } = useBlog();
+  const { posts, users, loading } = useBlog();
   
   /**
    * useState:
@@ -100,6 +104,14 @@ const PostList: React.FC = () => {
       post.tags.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [posts, searchTerm]);
+
+  if (loading && posts.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

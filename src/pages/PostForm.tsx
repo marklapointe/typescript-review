@@ -10,7 +10,7 @@ import { Tag as TagIcon, X, PlusCircle, Send } from 'lucide-react';
  */
 const PostForm: React.FC = () => {
   const navigate = useNavigate();
-  const { addPost, currentUser } = useBlog();
+  const { addPost, currentUser, loading } = useBlog();
   
   /**
    * useState:
@@ -56,13 +56,13 @@ const PostForm: React.FC = () => {
    * Form submission handler. It collects all our state values and 
    * calls the 'addPost' action from our global context.
    */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation.
     if (!title || !content || !currentUser) return;
 
-    addPost({
+    await addPost({
       title,
       content,
       tags,
@@ -151,10 +151,15 @@ const PostForm: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2"
+          disabled={loading}
+          className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Send size={18} />
-          Publish Post
+          {loading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          ) : (
+            <Send size={18} />
+          )}
+          {loading ? 'Publishing...' : 'Publish Post'}
         </button>
       </form>
     </div>
