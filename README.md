@@ -100,3 +100,63 @@ Currently, there are no tests in this project.
 ## 📄 License
 
 - [ ] **TODO**: Add a `LICENSE` file and specify the license type here.
+
+---
+
+## 🏗️ Creating from Scratch
+
+To recreate this project from scratch, follow these steps:
+
+1. **Initialize the Project with Vite**:
+   ```bash
+   npm create vite@latest my-blog-project -- --template react-ts
+   cd my-blog-project
+   ```
+
+2. **Install Core Dependencies**:
+   ```bash
+   npm install react-router-dom lucide-react
+   ```
+
+3. **Set Up Tailwind CSS 4**:
+   Vite 7 and Tailwind CSS 4 work seamlessly together. Install the Tailwind CSS package and its Vite plugin:
+   ```bash
+   npm install tailwindcss @tailwindcss/vite
+   ```
+
+4. **Configure Vite**:
+   Update `vite.config.ts` to include the Tailwind CSS plugin:
+   ```typescript
+   import { defineConfig } from 'vite'
+   import react from '@vitejs/plugin-react'
+   import tailwindcss from '@tailwindcss/vite'
+
+   export default defineConfig({
+     plugins: [
+       react(),
+       tailwindcss(),
+     ],
+   })
+   ```
+
+5. **Import Tailwind in CSS**:
+   In `src/index.css`, replace the default content with:
+   ```css
+   @import "tailwindcss";
+   ```
+
+6. **Set Up Testing (Vitest)**:
+   To include the testing suite, install the following:
+   ```bash
+   npm install -D vitest @vitest/ui @testing-library/react @testing-library/jest-dom jsdom
+   ```
+   Add a `test` script to your `package.json`:
+   ```json
+   "scripts": {
+     "test": "vitest",
+     "test:ui": "vitest --ui"
+   }
+   ```
+
+7. **Project Scaffolding**:
+   Create the directory structure as outlined in the **Project Structure** section above and start building your components!
