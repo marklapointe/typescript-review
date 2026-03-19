@@ -62,6 +62,8 @@ This project is a web application for managing and reviewing blog posts. It feat
 | `npm run dev` | Runs the app in development mode with Vite. |
 | `npm run build` | Compiles TypeScript and builds the production app. |
 | `npm run preview` | Locally previews the production build. |
+| `npm run test` | Runs tests with Vitest in watch mode. |
+| `npm run test:ui` | Runs tests with the Vitest UI browser interface. |
 
 ## 📁 Project Structure
 
@@ -70,7 +72,6 @@ This project is a web application for managing and reviewing blog posts. It feat
 ├── src/                # Source code
 │   ├── components/     # Shared React components (Layout, Common)
 │   ├── context/        # React Context API (BlogContext)
-│   ├── hooks/          # Custom React hooks (TODO: Add hooks)
 │   ├── pages/          # Page components (PostList, PostDetail, PostForm)
 │   ├── types/          # TypeScript interfaces and types (blog.ts)
 │   ├── App.tsx         # Main App component with Routing
@@ -86,20 +87,20 @@ This project is a web application for managing and reviewing blog posts. It feat
 
 ## 🔐 Environment Variables
 
-No environment variables are currently required for this project.
-
-- [ ] **TODO**: If needed, add `.env.example` file and document variables here.
+No environment variables are required for this project.
 
 ## 🧪 Tests
 
-Currently, there are no tests in this project.
+Tests are set up using [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/).
 
-- [ ] **TODO**: Add unit tests (e.g., using [Vitest](https://vitest.dev/)).
-- [ ] **TODO**: Add E2E tests (e.g., using [Playwright](https://playwright.dev/)).
+| Script | Description |
+| :--- | :--- |
+| `npm run test` | Runs tests in watch mode. |
+| `npm run test:ui` | Runs tests with the Vitest UI browser interface. |
 
 ## 📄 License
 
-- [ ] **TODO**: Add a `LICENSE` file and specify the license type here.
+This project is unlicensed (public domain). Add a `LICENSE` file to specify a license if needed.
 
 ---
 
